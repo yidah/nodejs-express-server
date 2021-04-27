@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-// const products = [];
 // path.dirname returns directory name of a path
 // require.main.filename gives us the path to the start up file, app.js
 const p = path.join(
@@ -9,17 +8,22 @@ const p = path.join(
   'products.json'
 );
 
+const getProductsFromFile = (callbackFunction) => {
+  fs.readFile(p, (err, fileContent) => {
+    if (err) {
+      return callbackFunction([]);
+    }
+    callbackFunction(JSON.parse(fileContent));
+  });
+};
+
 module.exports = class Product {
   constructor(t) {
     this.title = t;
   }
 
   save() {
-    fs.readFile(p, (err, fileContent) => {
-      let products = [];
-      if (!err) {
-        products = JSON.parse(fileContent);
-      }
+    getProductsFromFile((products) => {
       // We avoid to lose the context of "this"
       // by using an arrow function as a callback (err,fileContent)=>
       products.push(this);
@@ -34,11 +38,6 @@ module.exports = class Product {
   // As fs.readFile is an async call we use a callbackFunction so that whenever we finished reading the
   // file we can send the returned data to our function (see products.js controller)
   static fetchAll(callbackFunction) {
-    fs.readFile(p, (err, fileContent) => {
-      if (err) {
-        callbackFunction([]);
-      }
-      callbackFunction(JSON.parse(fileContent));
-    });
+    getProductsFromFile(callbackFunction);
   }
 };
