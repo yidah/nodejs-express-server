@@ -2,7 +2,7 @@ const Product = require('../models/product');
 exports.getAddProduct = (req, res, next) => {
     // res.sendFile(path.join(rootDir,'views','add-product.html'));
     res.render('admin/add-product', {
-      docTitle: 'Add product',
+      pageTitle: 'Add product',
       path: 'admin/add-product',
       // formsCSS: true,
       // productCSS: true,
@@ -25,7 +25,7 @@ exports.getAddProduct = (req, res, next) => {
     Product.fetchAll((products) => {
       res.render('admin/products', { 
         prods: products, 
-        docTitle: 'Admin Products', 
+        pageTitle: 'Admin Products', 
         path: 'admin/products' });
     });
   }
