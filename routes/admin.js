@@ -15,7 +15,7 @@ router.get('/products', adminController.getProducts);
 
 // /admin/add-product => POST
 // filter for only post requests
-router.post('/add-product', adminController.postAddNewProduct);
+router.post('/add-product', adminController.postAddProduct);
 
 // export router
 module.exports = router;
