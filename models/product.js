@@ -26,6 +26,7 @@ module.exports = class Product {
   }
 
   save() {
+    this.id = Math.random().toString();
     getProductsFromFile((products) => {
       // We avoid to lose the context of "this"
       // by using an arrow function as a callback (err,fileContent)=>
@@ -42,5 +43,14 @@ module.exports = class Product {
   // file we can send the returned data to our function (see products.js controller)
   static fetchAll(callbackFunction) {
     getProductsFromFile(callbackFunction);
+  }
+
+  // load details
+  static findById(id, callbackFunction){
+    getProductsFromFile(products => {
+      const product = products.find(p=>p.id === id);
+      callbackFunction(product);
+    })
+
   }
 };
