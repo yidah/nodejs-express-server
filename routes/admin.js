@@ -17,6 +17,11 @@ router.get('/products', adminController.getProducts);
 // filter for only post requests
 router.post('/add-product', adminController.postAddProduct);
 
+router.post('/edit-product/', adminController.postEditProduct);
+
+router.get('/edit-product/:productId', adminController.getEditProduct);
+
+
 // export router
 module.exports = router;
 

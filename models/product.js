@@ -18,22 +18,34 @@ const getProductsFromFile = (callbackFunction) => {
 };
 
 module.exports = class Product {
-  constructor(title,imageUrl, description, price) {
+  constructor(id, title, imageUrl, description, price) {
+    this.id = id;
     this.title = title;
     this.imageUrl = imageUrl;
-    this.description= description;
+    this.description = description;
     this.price = price;
   }
 
   save() {
-    this.id = Math.random().toString();
-    getProductsFromFile((products) => {
-      // We avoid to lose the context of "this"
-      // by using an arrow function as a callback (err,fileContent)=>
-      products.push(this);
-      fs.writeFile(p, JSON.stringify(products), (err) => {
-        console.log(err);
-      });
+    getProductsFromFile(products => {
+      if (this.id) { // we update a product
+        const existingProductIndex = products.findIndex(
+          prod => prod.id === this.id
+        );
+        const updateProducts = [...products];
+        updateProducts[existingProductIndex] = this;
+        fs.writeFile(p, JSON.stringify(updateProducts), (err) => {
+          console.log(err);
+        });
+      } else {// we create a product
+        this.id = Math.random().toString();
+        // We avoid to lose the context of "this"
+        // by using an arrow function as a callback (err,fileContent)=>
+        products.push(this);
+        fs.writeFile(p, JSON.stringify(products), (err) => {
+          console.log(err);
+        });
+      }
     });
   }
 
@@ -46,11 +58,10 @@ module.exports = class Product {
   }
 
   // load details
-  static findById(id, callbackFunction){
-    getProductsFromFile(products => {
-      const product = products.find(p=>p.id === id);
+  static findById(id, callbackFunction) {
+    getProductsFromFile((products) => {
+      const product = products.find((p) => p.id === id);
       callbackFunction(product);
-    })
-
+    });
   }
 };
