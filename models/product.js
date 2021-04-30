@@ -1,5 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+
+const Cart = require('./cart');
+
 // path.dirname returns directory name of a path
 // require.main.filename gives us the path to the start up file, app.js
 const p = path.join(
@@ -49,6 +52,21 @@ module.exports = class Product {
     });
   }
 
+  static deleteById(id){
+    getProductsFromFile((products) => {
+      const product = products.find(prod => prod.id === id);
+      const updatedProducts = products.filter(p => p.id !== id);
+      // write to the file the products without the one we want to delete
+      fs.writeFile(p, JSON.stringify(updatedProducts), err => {
+        if(!err){
+          // delete product also from the cart if exists
+          Cart.deleteProduct(id, product.price);
+        }
+      });
+    });
+
+  }
+
   //It is not call on a single instance of a product because it should fetch all products
   //so static makes sure that we can call this method directly on the class itself and not on an instance
   // As fs.readFile is an async call we use a callbackFunction so that whenever we finished reading the
@@ -59,8 +77,8 @@ module.exports = class Product {
 
   // load details
   static findById(id, callbackFunction) {
-    getProductsFromFile((products) => {
-      const product = products.find((p) => p.id === id);
+    getProductsFromFile(products => {
+      const product = products.find(p => p.id === id);
       callbackFunction(product);
     });
   }
