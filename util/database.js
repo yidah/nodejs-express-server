@@ -1,12 +1,11 @@
-const mysql = require('mysql2');
+// ORM connection to the db
+const Sequelize = require('sequelize');
 
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  database: 'node-complete',
-  password:'yidah'
+const sequelize = new Sequelize('node-complete', 'root','yidah',{
+  dialect:'mysql',
+  host:'localhost'
 });
 
-// allows to work with promises instead of callbacks
-module.exports= pool.promise();
+module.exports = sequelize;
+
 
